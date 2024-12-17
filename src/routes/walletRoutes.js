@@ -1,13 +1,14 @@
 // routes/walletRoutes.js
 import express from 'express';
 import {
-  createWallet,
+
   getWallets,
   updateWalletBalance,
   deleteWallet,
   addBalance,
   subtractBalance,
   toggleWalletStatus,
+  getWallet,
 } from '../controllers/walletController.js';
 import { authenticate, authorizeAdmin } from '../middleware/authMiddleware.js';
 import { checkWalletStatus } from '../middleware/walletMiddleware.js';
@@ -15,10 +16,10 @@ import { checkWalletStatus } from '../middleware/walletMiddleware.js';
 const router = express.Router();
 
 // Create Wallet (Admin or Self)
-router.post('/', authenticate, createWallet);
+router.get('/', authenticate, getWallet);
 
 // Get All Wallets (Admin)
-router.get('/', authenticate, authorizeAdmin, getWallets);
+// router.get('/', authenticate, authorizeAdmin, getWallets);
 
 // Update Wallet Balance
 router.put(

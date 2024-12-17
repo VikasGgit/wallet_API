@@ -2,26 +2,27 @@
 import prisma from '../prisma/prismaClient.js';
 
 // Create Wallet
-export const createWallet = async (req, res) => {
+export const getWallet = async (req, res) => {
   try {
-    let balance=0.0;
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: 'Unauthorized or userId missing' });
+    }
+
     const { userId } = req.user;
 
-    // Check if user exists
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user)
-      return res.status(404).json({ message: 'User not found' });
+    // Check if wallet exists
+    const wallet = await prisma.wallet.findFirst({ where: { userId } });
+    if (!wallet) {
+      return res.status(404).json({ message: 'Wallet not found' });
+    }
 
-    const wallet = await prisma.wallet.create({
-      data: { userId, balance },
-    });
-
-    res.status(201).json({ message: 'Wallet created successfully', wallet });
+    res.status(200).json({ message: 'Wallet found', wallet });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
+
 
 // Get All Wallets (Admin)
 export const getWallets = async (req, res) => {

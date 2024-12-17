@@ -18,7 +18,12 @@ export const registerUser = async (req, res) => {
       data: { username, email, password: hashedPassword, role },
     });
 
-    res.status(201).json({ message: 'User registered successfully', user });
+      const userId=user.id;
+      let balance=0.0;
+    const wallet = await prisma.wallet.create({
+      data: { userId, balance },
+    });
+    res.status(201).json({ message: 'User registered successfully', user, wallet });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
