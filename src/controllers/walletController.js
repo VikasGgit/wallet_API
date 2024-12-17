@@ -45,7 +45,7 @@ export const getWallets = async (req, res) => {
 export const updateWalletBalance = async (req, res) => {
   try {
     const { walletId } = req.params;
-    const { amount, operation,  } = req.body;
+    const { amount, operation, category } = req.body;
 
     // Wallet is already fetched and attached by middleware
     const wallet = req.wallet;
@@ -79,7 +79,7 @@ export const updateWalletBalance = async (req, res) => {
           walletId,
           type: operation === 'add' ? 'CREDIT' : 'DEBIT',
           amount,
-          category: 'wallet_update',
+          category: category || 'wallet_update',
           recurring: false,
         },
       }),
