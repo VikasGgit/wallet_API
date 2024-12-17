@@ -4,6 +4,8 @@ import {
   getAllUsers,
   deleteUser,
   resetUserCredentials,
+  freezeUserAccount,
+  unfreezeUserAccount
 } from '../controllers/adminController.js';
 import { authenticate, authorizeAdmin } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
@@ -25,5 +27,12 @@ router.post(
   validate(resetCredentialsSchema),
   resetUserCredentials
 );
+
+
+router.post('/users/:id/freeze', authenticate, authorizeAdmin, freezeUserAccount);
+
+// Unfreeze User Account
+router.post('/users/:id/unfreeze', authenticate, authorizeAdmin, unfreezeUserAccount);
+
 
 export default router;
