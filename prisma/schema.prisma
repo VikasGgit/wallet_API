@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  wallets   Wallet[]
+  createdAt DateTime?  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Wallet {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String        @db.ObjectId
+  balance      Float         @default(0.0)
+  status       WalletStatus  @default(ACTIVE)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+enum WalletStatus {
+  ACTIVE
+  FROZEN
+}
+
+model Transaction {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  walletId  String           @db.ObjectId
+  type      TransactionType
+  amount    Float
+  category  String?
+  recurring Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  wallet    Wallet           @relation(fields: [walletId], references: [id])
+}
