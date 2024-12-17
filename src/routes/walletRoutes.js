@@ -25,7 +25,6 @@ router.get('/', authenticate, getWallet);
 router.put(
   '/:walletId/balance',
   authenticate,
-
   checkWalletStatus,
   updateWalletBalance
 );

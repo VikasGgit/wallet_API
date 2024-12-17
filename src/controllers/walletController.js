@@ -11,7 +11,11 @@ export const getWallet = async (req, res) => {
     const { userId } = req.user;
 
     // Check if wallet exists
-    const wallet = await prisma.wallet.findFirst({ where: { userId } });
+    const wallet = await prisma.wallet.findFirst({ where: { userId },
+      include: {
+        transactions: true, // Include all transactions associated with the wallet
+      },
+    });
     if (!wallet) {
       return res.status(404).json({ message: 'Wallet not found' });
     }
@@ -41,7 +45,7 @@ export const getWallets = async (req, res) => {
 export const updateWalletBalance = async (req, res) => {
   try {
     const { walletId } = req.params;
-    const { amount, operation, description } = req.body;
+    const { amount, operation,  } = req.body;
 
     // Wallet is already fetched and attached by middleware
     const wallet = req.wallet;
